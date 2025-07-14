@@ -1,0 +1,9 @@
+id,title,description,status,created_timestamp,updated_timestamp,priority
+1,Fix login bug,Users can't log in with special characters in password,IN_PROGRESS,2024-07-10 09:30:00,2024-07-12 14:20:00,1
+2,Write unit tests,Add comprehensive test coverage for user authentication,NOT_STARTED,2024-07-11 16:45:00,2024-07-11 16:45:00,2
+3,Update documentation,Refresh API documentation with latest endpoints,DONE,2024-07-08 11:00:00,2024-07-09 10:15:00,3
+4,Code review,Review Sarah's pull request for payment integration,IN_PROGRESS,2024-07-12 08:15:00,2024-07-13 09:00:00,1
+5,Database migration,Migrate user table to new schema,NOT_STARTED,2024-07-13 07:30:00,2024-07-13 07:30:00,2
+6,Security audit,Run security scan on authentication module,DONE,2024-07-05 14:20:00,2024-07-06 16:30:00,1
+7,Performance optimization,Optimize database queries for user search,NOT_STARTED,2024-07-12 13:45:00,2024-07-12 13:45:00,3
+8,Bug triage,Go through bug reports from last sprint,IN_PROGRESS,2024-07-11 10:00:00,2024-07-13 11:30:00,2

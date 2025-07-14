@@ -1,8 +1,9 @@
 package models
 
 import (
-	"errors"
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -14,65 +15,88 @@ const (
 	StatusDone       Status = "DONE"
 )
 
-func (s Status) IsValid() (bool, error) {
+func (s Status) IsValid() bool {
 	switch s {
 	case StatusDone, StatusInProgress, StatusNotStarted:
-		return true, nil
+		return true
 	default:
-		errorMsg := fmt.Sprintf("%s is not a valid status!", s)
-		return false, errors.New(errorMsg)
+		return false
 	}
 }
 
+func ParseStatus(s string) (Status, error) {
+	status := Status(strings.ToUpper(s))
+	if !status.IsValid() {
+		return "", fmt.Errorf("invalid status: %s", s)
+	}
+	return status, nil
+}
+
 type Record struct {
-	id                uint8
-	title             string
-	descritption      string
-	status            Status
-	created_timestamp time.Time
-	updated_timestamp time.Time
-	priority          uint8
+	Id                int
+	Title             string
+	Description       string
+	Status            Status
+	Created_timestamp time.Time
+	Updated_timestamp time.Time
+	Priority          int
+}
+
+func NewRecord(headers []string, row []string) (*Record, error) {
+	if len(headers) != len(row) {
+		return nil, fmt.Errorf("header count (%d) doesn't match row count (%d)", len(headers), len(row))
+	}
+
+	record := &Record{}
+
+	data := make(map[string]string)
+	for i, header := range headers {
+		data[header] = row[i]
+	}
+
+	id, err := strconv.Atoi(data["id"])
+	if err != nil {
+		return nil, fmt.Errorf("failure validating id: %w", err)
+	}
+	record.Id = id
+
+	record.Title = data["title"]
+	record.Description = data["description"]
+
+	status, err := ParseStatus(data["status"])
+	if err != nil {
+		return nil, fmt.Errorf("failure validating status: %w", err)
+	}
+	record.Status = status
+
+	created, err := time.Parse(time.DateTime, data["created_timestamp"])
+	if err != nil {
+		return nil, fmt.Errorf("failure vailidating created timestamp: %w", err)
+	}
+	record.Created_timestamp = created
+	record.Updated_timestamp = created
+
+	return record, nil
 }
 
 func (r Record) Format() string {
 	record := fmt.Sprintf(
 		"%d, %s, %s, %s, %s, %s, %d",
-		r.id,
-		r.title,
-		r.descritption,
-		r.status,
-		r.created_timestamp.String(),
-		r.updated_timestamp.String(),
-		r.priority,
+		r.Id,
+		r.Title,
+		r.Description,
+		r.Status,
+		r.Created_timestamp.String(),
+		r.Updated_timestamp.String(),
+		r.Priority,
 	)
 	return record
 }
 
 func (r *Record) SetStatus(s string) (Status, error) {
-	status := Status(s)
-
-	isValid, err := status.IsValid()
-	if !isValid && err == nil {
-		r.status = status
+	status, err := ParseStatus(s)
+	if err != nil {
+		return "", err
 	}
-
 	return status, err
-}
-
-func (r *Record) SetCreatedDateTime(timestamp string) (time.Time, error) {
-	time, err := time.Parse(time.DateTime, timestamp)
-	if err == nil {
-		r.created_timestamp = time
-	}
-
-	return time, err
-}
-
-func (r *Record) SetUpdatedDateTime(timestamp string) (time.Time, error) {
-	time, err := time.Parse(time.DateTime, timestamp)
-	if err == nil {
-		r.updated_timestamp = time
-	}
-
-	return time, err
 }
