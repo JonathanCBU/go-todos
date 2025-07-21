@@ -7,6 +7,7 @@ import (
 
 type List struct {
 	FileName string
+	Headers  []string
 	Records  map[int]*Record
 }
 
@@ -26,6 +27,7 @@ func (l *List) AddTodo(todo *Record) (int, error) {
 func NewList(fileName string, headers []string, table [][]string) (*List, error) {
 	list := &List{
 		FileName: fileName,
+		Headers:  headers,
 		Records:  make(map[int]*Record),
 	}
 	var record *Record

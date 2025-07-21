@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+const TimeFormat string = time.DateTime
+
 type Status string
 
 const (
@@ -69,7 +71,7 @@ func NewRecord(headers []string, row []string) (*Record, error) {
 	}
 	record.Status = status
 
-	created, err := time.Parse(time.DateTime, data["created_timestamp"])
+	created, err := time.Parse(TimeFormat, data["created_timestamp"])
 	if err != nil {
 		return nil, fmt.Errorf("failure vailidating created timestamp: %w", err)
 	}
@@ -79,24 +81,22 @@ func NewRecord(headers []string, row []string) (*Record, error) {
 	return record, nil
 }
 
-func (r Record) Format() string {
-	record := fmt.Sprintf(
-		"%d, %s, %s, %s, %s, %s, %d",
-		r.Id,
-		r.Title,
-		r.Description,
-		r.Status,
-		r.Created_timestamp.String(),
-		r.Updated_timestamp.String(),
-		r.Priority,
-	)
-	return record
-}
-
 func (r *Record) SetStatus(s string) (Status, error) {
 	status, err := ParseStatus(s)
 	if err != nil {
 		return "", err
 	}
 	return status, err
+}
+
+func (r Record) Writable() []string {
+	return []string{
+		strconv.Itoa(r.Id),
+		r.Title,
+		r.Description,
+		string(r.Status),
+		r.Created_timestamp.Format(TimeFormat),
+		r.Updated_timestamp.Format(TimeFormat),
+		strconv.Itoa(r.Priority),
+	}
 }

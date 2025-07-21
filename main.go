@@ -31,4 +31,30 @@ func main() {
 	for idx, row := range list.Records {
 		fmt.Println(idx, row.Description)
 	}
+
+	r1, err := models.NewRecord(
+		list.Headers,
+		[]string{
+			"666",
+			"This is new",
+			"Example description test",
+			"DONE",
+			"2006-01-02 15:04:05",
+			"2006-01-06 15:04:05",
+			"1",
+		},
+	)
+
+	fmt.Println(r1.Writable())
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = csv.WriteRecord(*list, *r1)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 }
