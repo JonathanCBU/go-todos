@@ -1,0 +1,15 @@
+{
+  "csv": {
+    "timestamp_format": "2006-01-02 15:04:05",
+    "headers": [
+      "id",
+      "title",
+      "description",
+      "status",
+      "created_timestamp",
+      "updated_timestamp",
+      "priority"
+    ],
+    "statuses": ["DONE", "NOT_STARTED", "IN_PROGRESS"]
+  }
+}

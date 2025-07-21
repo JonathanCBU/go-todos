@@ -7,7 +7,6 @@ import (
 
 type List struct {
 	FileName string
-	Headers  []string
 	Records  map[int]*Record
 }
 
@@ -24,17 +23,16 @@ func (l *List) AddTodo(todo *Record) (int, error) {
 	return len(l.Records), nil
 }
 
-func NewList(fileName string, headers []string, table [][]string) (*List, error) {
+func NewList(fileName string, table [][]string) (*List, error) {
 	list := &List{
 		FileName: fileName,
-		Headers:  headers,
 		Records:  make(map[int]*Record),
 	}
 	var record *Record
 	var err error
 
 	for _, row := range table {
-		record, err = NewRecord(headers, row)
+		record, err = NewRecord(row)
 		if err != nil {
 			return nil, fmt.Errorf("failure generating record: %w", err)
 		}
