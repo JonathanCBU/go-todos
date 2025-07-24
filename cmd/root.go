@@ -1,11 +1,31 @@
 package cmd
 
 import (
-	"github.com/JonathanCBU/gotodos/internal/models"
+	"os"
+
+	"log"
+
+	"github.com/JonathanCBU/gotodos/internal/config"
+	"github.com/spf13/cobra"
 )
 
-func CreateModel() models.Record {
-	var record = models.Record{}
+var rootCmd = &cobra.Command{
+	Use:   "godos",
+	Short: "Basic todo app in Go",
+}
 
-	return record
+func Execute() {
+	// err := config.Load("config.json")
+	err := config.Load("config.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = rootCmd.Execute()
+	if err != nil {
+		os.Exit(1)
+	}
+}
+
+func init() {
+
 }
